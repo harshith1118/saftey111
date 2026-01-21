@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/generate': 'http://localhost:5000',
+      '/generate': 'https://medisummary-702123324614.us-central1.run.app',
     },
   },
 })
