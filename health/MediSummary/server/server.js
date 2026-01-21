@@ -25,10 +25,17 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 app.post('/generate', async (req, res) => {
     try {
         const { mode, note } = req.body;
-        console.log(`Processing request: ${mode}`); // Log request mode
+        console.log(`Processing request: ${mode}`); 
+        console.log(`Received note snippet: ${note ? note.substring(0, 100) : "EMPTY/NULL"}`);
 
-        // Updated to Gemini 3 Flash Preview
-        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+        // Updated to Gemini 3 Flash Preview with Low Temp to prevent hallucinations
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-3-flash-preview",
+            generationConfig: {
+                temperature: 0.2, // Low temperature for deterministic medical output
+                maxOutputTokens: 2000,
+            }
+        });
 
         let prompt = "";
         const baseSystemInstruction = "You are a healthcare note assistant. Do not diagnose. Only use the given note. ";
@@ -74,7 +81,7 @@ Note: ${note}`;
 
                 Structure strictly as follows:
                 ### Subjective (S)
-                (Chief complaint, history of present illness, patient reports)
+                (Chief complaint, history of present illness, patient reports. If completely missing, state "Not Documented - ⚠️ Subjective data missing.")
 
                 ### Objective (O)
                 (Vital signs, physical exam findings, lab/test results mentioned)
@@ -85,7 +92,11 @@ Note: ${note}`;
                 ### Plan (P)
                 (Medications, follow-up, patient education, next steps)
 
-                Use professional medical terminology. If information is missing for a section, state "Not documented".
+                CRITICAL INSTRUCTION FOR MISSING PLAN:
+                - If the source note DOES NOT contain a plan, DO NOT just state "Not documented".
+                - Instead, GENERATE a suggested plan based on the Assessment and standard clinical guidelines.
+                - YOU MUST prefix any AI-generated plan items with: "[⚠️ AI SUGGESTION]" to clearly distinguish them from the doctor's specific orders.
+                - Ensure the suggested plan is safe, conservative, and includes standard follow-up instructions.
 
                 Note: ${note}`;
                 break;
@@ -93,7 +104,11 @@ Note: ${note}`;
                 return res.status(400).json({ error: "Invalid mode" });
         }
 
+        // PERFORMANCE LOGGING: Measure exact generation time
+        console.time("Gemini_Generation_Time");
         const result = await model.generateContent(prompt);
+        console.timeEnd("Gemini_Generation_Time");
+
         const response = await result.response;
         const text = response.text();
 

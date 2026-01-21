@@ -74,12 +74,41 @@ Plan: EKG normal. Likely musculoskeletal. Rec NSAIDs. Follow up with PCP in 1 we
     setOutput('');
     setCopied(false);
 
+    // Helper for fetch retries - Optimized for speed
+    const fetchWithRetry = async (url, options, retries = 1, delay = 500) => {
+      for (let i = 0; i <= retries; i++) {
+        try {
+          // Add timeout signal (15s limit)
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
+          
+          const res = await fetch(url, { ...options, signal: controller.signal });
+          clearTimeout(timeoutId);
+
+          if (!res.ok && res.status >= 500) throw new Error(`Server error: ${res.status}`);
+          return res;
+        } catch (err) {
+          if (i === retries) throw err;
+          await new Promise(r => setTimeout(r, delay));
+        }
+      }
+    };
+
     try {
-      const response = await fetch('/generate', {
+      // Show "Processing..." message quickly
+      const slowServerTimeout = setTimeout(() => {
+        if (loading) setError('Analyzing note...');
+      }, 1000);
+
+      const response = await fetchWithRetry('/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode, note }),
       });
+
+      clearTimeout(slowServerTimeout);
+      // clear waking up message if it was set (checking if error is currently that specific message)
+      setError((prev) => prev.startsWith('Server is waking') ? '' : prev);
 
       const data = await response.json();
       if (response.ok) {
@@ -87,8 +116,8 @@ Plan: EKG normal. Likely musculoskeletal. Rec NSAIDs. Follow up with PCP in 1 we
       } else {
         setError(data.error || 'Something went wrong.');
       }
-    } catch (err) {
-      setError('Failed to connect to server. Ensure backend is running.');
+    } catch (error) {
+      setError('Server busy or unreachable. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -253,9 +282,9 @@ Plan: EKG normal. Likely musculoskeletal. Rec NSAIDs. Follow up with PCP in 1 we
                     <div className="markdown-body">
                       <ReactMarkdown
                          components={{
-                           ul: ({node, ...props}) => <ul className="list-unstyled" {...props} />,
-                           li: ({node, ...props}) => <li className="mb-3">{props.children}</li>,
-                           h3: ({node, ...props}) => <h3 className="mb-3 mt-4">{props.children}</h3>,
+                           ul: ({...props}) => <ul className="list-unstyled" {...props} />,
+                           li: ({...props}) => <li className="mb-3">{props.children}</li>,
+                           h3: ({...props}) => <h3 className="mb-3 mt-4">{props.children}</h3>,
                          }}
                       >
                         {output}
