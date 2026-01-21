@@ -23,6 +23,11 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post('/generate', async (req, res) => {
+    if (!process.env.GEMINI_API_KEY) {
+        console.error("ERROR: GEMINI_API_KEY is not set.");
+        return res.status(500).json({ error: "Server Error: API Key is missing. Please set GEMINI_API_KEY in your environment variables." });
+    }
+
     try {
         const { mode, note } = req.body;
         console.log(`Processing request: ${mode}`); 
