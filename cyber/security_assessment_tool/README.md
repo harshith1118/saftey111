@@ -9,6 +9,11 @@
 
 ---
 
+## 🔗 Live Demo
+Access the hosted application here: **[https://safetytracker.streamlit.app/](https://safetytracker.streamlit.app/)**
+
+---
+
 ## ✨ Key Capabilities
 
 | Feature | Description |
@@ -56,6 +61,18 @@ GEMINI_API_KEY=your_gemini_key_here
 ```bash
 streamlit run app.py
 ```
+
+---
+
+## ☁️ Deployment (Streamlit Cloud)
+To deploy this app on Streamlit Cloud:
+1.  **Push** your code to GitHub.
+2.  Connect your repository to **[Streamlit Cloud](https://share.streamlit.io/)**.
+3.  Add your API keys in the **Secrets** dashboard:
+    ```toml
+    VIRUSTOTAL_API_KEY = "your_key"
+    GEMINI_API_KEY = "your_key"
+    ```
 
 ---
 
