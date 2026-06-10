@@ -10,18 +10,8 @@ def generate_report(findings, risk_analysis):
 
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # Try to find an available model that supports generateContent
-    model_name = 'gemini-1.5-flash' # Default
-    try:
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                model_name = m.name
-                break
-    except Exception:
-        # Fallback to default if list_models fails
-        model_name = 'models/gemini-1.5-flash'
-
-    model = genai.GenerativeModel(model_name)
+    # Using 'gemini-pro' as it is the most stable and widely available model
+    model = genai.GenerativeModel('gemini-pro')
 
     prompt = f"""
     You are a professional Cybersecurity Analyst. 
