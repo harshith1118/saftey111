@@ -3,16 +3,13 @@ from config.settings import GEMINI_API_KEY
 
 def generate_report(findings, risk_analysis):
     """
-    Generate a professional cybersecurity report using Gemini AI.
+    Generate a professional cybersecurity report using Gemini AI with fallback models.
     """
     if not GEMINI_API_KEY:
         return "Gemini API Key is missing. Cannot generate AI report."
 
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # Using 'gemini-pro' as it is the most stable and widely available model
-    model = genai.GenerativeModel('gemini-pro')
-
     prompt = f"""
     You are a professional Cybersecurity Analyst. 
     Generate a concise security assessment report based on the following data:
@@ -36,8 +33,17 @@ def generate_report(findings, risk_analysis):
     Use a professional and clear tone.
     """
 
-    try:
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return f"Error generating AI report: {str(e)}"
+    # List of models to try in order of preference
+    models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
+    last_error = ""
+
+    for model_name in models_to_try:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(prompt)
+            return response.text
+        except Exception as e:
+            last_error = str(e)
+            continue # Try the next model
+            
+    return f"Error generating AI report: All attempted models failed. Last error: {last_error}"
