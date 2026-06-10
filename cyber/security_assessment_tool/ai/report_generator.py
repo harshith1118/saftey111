@@ -33,8 +33,14 @@ def generate_report(findings, risk_analysis):
     Use a professional and clear tone.
     """
 
-    # List of models to try in order of preference
-    models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro']
+    # List of models to try with explicit paths
+    models_to_try = [
+        'models/gemini-1.5-flash', 
+        'models/gemini-1.5-pro', 
+        'models/gemini-1.0-pro',
+        'gemini-1.5-flash',
+        'gemini-pro'
+    ]
     last_error = ""
 
     for model_name in models_to_try:
@@ -44,6 +50,13 @@ def generate_report(findings, risk_analysis):
             return response.text
         except Exception as e:
             last_error = str(e)
-            continue # Try the next model
+            continue 
+
+    # If all fail, try to diagnose by listing available models
+    try:
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        diag_msg = f"Available models for your key: {', '.join(available_models)}"
+    except Exception as diag_err:
+        diag_msg = f"Could not list models: {str(diag_err)}"
             
-    return f"Error generating AI report: All attempted models failed. Last error: {last_error}"
+    return f"Error: All models failed. \nLast Error: {last_error} \nDiagnostics: {diag_msg}"
