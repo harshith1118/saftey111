@@ -1,85 +1,83 @@
-# 🛡️ AI Powered Security Assessment Tool
+# 🛡️ AI-Powered Security Assessment Tool
 
-A modular, AI-driven cybersecurity dashboard that analyzes URLs, IP addresses, and files to detect threats and generate professional, human-readable security reports.
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B.svg)](https://streamlit.io/)
+[![VirusTotal](https://img.shields.io/badge/Intelligence-VirusTotal-blue.svg)](https://www.virustotal.com/)
+[![Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-orange.svg)](https://ai.google.dev/)
 
-## 🚀 Key Features
+> **A professional-grade cybersecurity dashboard** that simplifies complex threat intelligence into human-readable reports using the power of AI.
 
--   **Website URL Scanning:** Analyzes URL reputation and identifies malicious or suspicious indicators.
--   **IP Address Reputation:** Checks global threat intelligence databases for IP reputation.
--   **File Security Analysis:** Scans uploaded `.exe`, `.zip`, and `.pdf` files using SHA256 hashing and VirusTotal.
--   **Intelligent Risk Engine:** Calculates a normalized risk score (0-100) and categorizes threats (SAFE to CRITICAL).
--   **AI-Powered Reports:** Transforms technical findings into professional reports using Google Gemini AI.
--   **Raw Data Transparency:** View the underlying JSON responses from the Security API.
--   **Exportable Results:** Download your security assessment results as a standardized JSON report.
--   **Clean UI:** Modern Streamlit interface with real-time feedback and result persistence.
+---
 
-## 🛠️ Tech Stack
+## ✨ Key Capabilities
 
--   **Frontend:** [Streamlit](https://streamlit.io/)
--   **Programming Language:** Python 3.x
--   **Threat Intelligence:** [VirusTotal v3 API](https://developers.virustotal.com/reference/overview)
--   **Generative AI:** [Google Gemini API](https://ai.google.dev/)
--   **Libraries:** `requests`, `python-dotenv`, `google-generativeai`, `validators`
+| Feature | Description |
+| :--- | :--- |
+| 🌐 **URL Scanner** | Checks website reputation against 70+ security vendors. |
+| 📍 **IP Analysis** | Identifies malicious IP addresses and global threat origins. |
+| 📄 **File Guard** | Generates SHA256 hashes for `.exe`, `.zip`, `.pdf` to detect known malware. |
+| 🧠 **AI Reporting** | Converts technical logs into an executive summary with recommendations. |
+| 📊 **Risk Engine** | Automatically calculates a risk score from **0 (Safe)** to **100 (Critical)**. |
 
-## 📁 Project Structure
+---
 
-```text
-security_assessment_tool/
-├── app.py                  # Main Streamlit Dashboard
-├── ai/
-│   └── report_generator.py  # Gemini AI logic & dynamic model selection
-├── config/
-│   └── settings.py         # Environment configuration
-├── engine/
-│   └── risk_engine.py      # Risk scoring & normalization logic
-├── scanners/
-│   └── virustotal.py       # VirusTotal API integration
-├── utils/
-│   ├── file_handler.py     # SHA256 hashing & file validation
-│   └── validators.py       # URL & IP format validation
-├── docs/
-│   └── architecture.md     # System design & data flow
-├── .env.example            # Environment variable template
-├── requirements.txt         # Project dependencies
-└── README.md               # User documentation
+## 🚀 How It Works
+
+1.  **Input:** You provide a URL, IP, or File.
+2.  **Scan:** The tool queries the **VirusTotal API** for real-time security data.
+3.  **Analyze:** Our internal **Risk Engine** calculates the threat level.
+4.  **Generate:** **Google Gemini AI** writes a professional security report for you.
+5.  **Export:** Download the entire assessment as a **JSON report** for your records.
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1️⃣ Installation
+```bash
+# Clone the project
+git clone https://github.com/harshith1118/saftey111.git
+
+# Enter the directory
+cd security_assessment_tool
+
+# Install requirements
+pip install -r requirements.txt
 ```
 
-## ⚙️ Installation & Setup
+### 2️⃣ Configuration
+Create a `.env` file in the root folder and add your API keys:
+```env
+VIRUSTOTAL_API_KEY=your_virustotal_key_here
+GEMINI_API_KEY=your_gemini_key_here
+```
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone <your-repo-url>
-    cd security_assessment_tool
-    ```
-
-2.  **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-3.  **Configure API Keys:**
-    -   Create a `.env` file in the root directory (or copy `.env.example`).
-    -   Add your API keys:
-        ```env
-        VIRUSTOTAL_API_KEY=your_key_here
-        GEMINI_API_KEY=your_key_here
-        ```
-
-## 🖥️ Usage
-
-Start the application using the following command:
+### 3️⃣ Launch
 ```bash
 streamlit run app.py
 ```
 
-1.  Select the **Scan Type** from the sidebar (URL, IP, or File).
-2.  Provide the necessary input.
-3.  Click **"Start Security Scan"**.
-4.  View the findings, risk score, and AI-generated report.
-5.  (Optional) **Export** the results to JSON or **Clear** to start over.
+---
 
-## 🛡️ Security Disclaimer
-This tool is for educational and informational purposes only. It relies on third-party APIs (VirusTotal and Google Gemini) and does not guarantee 100% accuracy in threat detection. Always use multiple sources for critical security assessments.
+## 📂 Project Architecture
+
+```mermaid
+graph TD
+    A[User Input] --> B{Validator}
+    B -->|URL/IP| C[VirusTotal API]
+    B -->|File| D[SHA256 Hashing]
+    D --> C
+    C --> E[Risk Engine]
+    E --> F[Gemini AI]
+    F --> G[Final Security Report]
+```
 
 ---
-Built with ❤️ by Gemini CLI
+
+## ⚠️ Disclaimer
+*This tool is intended for security awareness and educational purposes. It utilizes external APIs and should be used as part of a broader security strategy.*
+
+---
+<p align="center">
+  Built with precision by <b>Gemini CLI</b>
+</p>
