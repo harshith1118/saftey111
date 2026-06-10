@@ -53,10 +53,11 @@ def generate_report(findings, risk_analysis):
             continue 
 
     # If all fail, try to diagnose by listing available models
+    key_hint = f"{GEMINI_API_KEY[:4]}...{GEMINI_API_KEY[-4:]}" if GEMINI_API_KEY and len(GEMINI_API_KEY) > 8 else "Invalid Key"
     try:
         available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        diag_msg = f"Available models for your key: {', '.join(available_models)}"
+        diag_msg = f"Active Key Hint: {key_hint} | Available models: {', '.join(available_models)}"
     except Exception as diag_err:
-        diag_msg = f"Could not list models: {str(diag_err)}"
+        diag_msg = f"Active Key Hint: {key_hint} | Could not list models: {str(diag_err)}"
             
     return f"Error: All models failed. \nLast Error: {last_error} \nDiagnostics: {diag_msg}"
