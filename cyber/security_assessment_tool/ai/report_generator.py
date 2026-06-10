@@ -33,13 +33,13 @@ def generate_report(findings, risk_analysis):
     Use a professional and clear tone.
     """
 
-    # List of models to try with explicit paths
+    # List of models to try based on diagnostics (prioritizing stable 2.0 and 3.1 versions)
     models_to_try = [
-        'models/gemini-1.5-flash', 
-        'models/gemini-1.5-pro', 
-        'models/gemini-1.0-pro',
-        'gemini-1.5-flash',
-        'gemini-pro'
+        'models/gemini-2.0-flash', 
+        'models/gemini-2.0-flash-lite', 
+        'models/gemini-3.1-flash-lite',
+        'models/gemini-1.5-flash',
+        'models/gemini-pro-latest'
     ]
     last_error = ""
 
@@ -51,13 +51,5 @@ def generate_report(findings, risk_analysis):
         except Exception as e:
             last_error = str(e)
             continue 
-
-    # If all fail, try to diagnose by listing available models
-    key_hint = f"{GEMINI_API_KEY[:4]}...{GEMINI_API_KEY[-4:]}" if GEMINI_API_KEY and len(GEMINI_API_KEY) > 8 else "Invalid Key"
-    try:
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        diag_msg = f"Active Key Hint: {key_hint} | Available models: {', '.join(available_models)}"
-    except Exception as diag_err:
-        diag_msg = f"Active Key Hint: {key_hint} | Could not list models: {str(diag_err)}"
             
-    return f"Error: All models failed. \nLast Error: {last_error} \nDiagnostics: {diag_msg}"
+    return f"Error: All models failed. \nLast Error: {last_error}"
