@@ -1,0 +1,30 @@
+# Security
+.env
+*.env
+VIRUSTOTAL_API_KEY*
+GEMINI_API_KEY*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project Specific
+security_assessment_tool/__pycache__/
+security_assessment_tool/config/__pycache__/
+security_assessment_tool/scanners/__pycache__/
+security_assessment_tool/engine/__pycache__/
+security_assessment_tool/ai/__pycache__/
+security_assessment_tool/utils/__pycache__/
